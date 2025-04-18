@@ -44,6 +44,7 @@ for route in data:
 			continue
 		stations = stations['names']
 		station_workloads = []
+		stations.append(mov['waypoint']['name']) # Начальная станция
 		for q in stations:
 			q = q.replace(' (по требованию)', '')
 			workload = requests.post('http://127.0.0.1:8000/count_people', json={'station_name': q}).json() # Получение колва людей на остановке
