@@ -1,5 +1,7 @@
 import requests
 import json
+
+# Запрос к апи 2gis для получения маршрутов
 key = 'ed3b168b-3bc9-4a90-b03b-13df2aece788'
 data = requests.post(f'https://routing.api.2gis.com/public_transport/2.0?key={key}',
                   headers= {'Content-Type': 'application/json'},
@@ -26,18 +28,17 @@ data = requests.post(f'https://routing.api.2gis.com/public_transport/2.0?key={ke
 	"transport": ["bus", "tram", "trolleybus"]
 }).json()
 
-
 routes = []
 for route in data:
-	if route['pedestrian']:
+	if route['pedestrian']: #если маршрут полностью пеший, то загруженность 0
 		route['workload'] = 0
 		continue
 	movements = []
-	for mov in route['movements']:
-		if mov['type'] == 'walkway':
+	for mov in route['movements']: #Обработка частей маршрута
+		if mov['type'] == 'walkway': # Если часть пешая, то 0
 			mov['workload'] = 0
 			continue
-		stations = mov['platforms']
+		stations = mov['platforms'] # Получение промежуточных станций по маршруту
 		if not stations:
 			mov['workload'] = 0
 			continue
@@ -45,7 +46,7 @@ for route in data:
 		station_workloads = []
 		for q in stations:
 			q = q.replace(' (по требованию)', '')
-			workload = requests.post('http://127.0.0.1:8000/count_people', json={'station_name': q}).json()
+			workload = requests.post('http://127.0.0.1:8000/count_people', json={'station_name': q}).json() # Получение колва людей на остановке
 			workload = workload['number_of_people']
 			station_workloads.append(workload)
 		mov['workload'] = sum(station_workloads)/len(station_workloads) # Берётся среднее по загруженности промежуточных станций
