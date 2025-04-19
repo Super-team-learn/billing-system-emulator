@@ -14,5 +14,5 @@ def get_subscribers_count(lat, lon, radius):
     radius = float(radius)
 
     return {
-        'subscribers_count': randint(10*int(lat)*int(radius), 1000*int(lon)*int(radius))
+        'subscribers_count': randint(10*int(lat)*int(radius)+1, 100*int(lon)*int(radius)+1)
     }
