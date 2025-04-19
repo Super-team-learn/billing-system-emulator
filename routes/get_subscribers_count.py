@@ -13,6 +13,7 @@ def get_subscribers_count(lat, lon, radius):
     lon = float(lon)
     radius = float(radius)
 
+    # Возвращаем эмуляцию работы с использованием псевдослучайных чисел
     return {
         'subscribers_count': randint(10*int(lat)*int(radius)+1, 100*int(lon)*int(radius)+1)
     }
